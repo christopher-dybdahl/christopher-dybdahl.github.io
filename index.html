@@ -8,402 +8,196 @@
 
   <style>
     :root{
-      --bg0:#070a14;
-      --bg1:#0b1020;
-      --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.10);
-      --line:rgba(255,255,255,.12);
-      --text:rgba(255,255,255,.92);
-      --muted:rgba(255,255,255,.72);
-      --muted2:rgba(255,255,255,.55);
-      --accent:#7aa2ff;
-      --accent2:#79f2c0;
-      --shadow:0 14px 40px rgba(0,0,0,.45);
-      --r:18px;
-      --max:1080px;
+      --max: 860px;
+      --text: #111;
+      --muted: #555;
+      --line: #e6e6e6;
+      --link: #0a66c2;
+      --bg: #fff;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
+    *{ box-sizing: border-box; }
+    html, body { height: 100%; }
     body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--text);
-      background:
-        radial-gradient(1000px 600px at 10% -10%, rgba(122,162,255,.20), transparent 55%),
-        radial-gradient(900px 550px at 90% 0%, rgba(121,242,192,.14), transparent 55%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      line-height: 1.5;
     }
 
-    a{color:inherit; text-decoration:none}
-    a:hover{color:var(--accent)}
-    .wrap{max-width:var(--max); margin:0 auto; padding:28px 18px 48px}
-    .topbar{
-      display:flex; justify-content:space-between; align-items:center;
-      gap:14px; padding:10px 0 22px;
-    }
-    .brand{
-      display:flex; flex-direction:column; line-height:1.05;
-    }
-    .brand .name{font-size:18px; font-weight:720; letter-spacing:.2px}
-    .brand .tag{font-size:13px; color:var(--muted)}
-    .nav{
-      display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;
-    }
-    .pill{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-      padding:8px 10px;
-      border-radius:999px;
-      font-size:13px;
-      color:var(--muted);
-      transition:transform .15s ease, background .15s ease;
-    }
-    .pill:hover{background:rgba(255,255,255,.08); transform:translateY(-1px); color:var(--text)}
-
-    .grid{
-      display:grid;
-      grid-template-columns: 110px 1fr;
-      gap:16px;
-      align-items:start;
+    .wrap{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 42px 18px 60px;
     }
 
-    @media (max-width: 860px){
-      .grid{grid-template-columns:1fr}
-      .logos{order:2}
+    a{ color: var(--link); text-decoration: none; }
+    a:hover{ text-decoration: underline; }
+
+    header{
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: start;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 26px;
     }
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--r);
-      box-shadow:var(--shadow);
+    h1{
+      font-size: 28px;
+      margin: 0 0 10px;
+      letter-spacing: 0.2px;
     }
 
-    .hero{padding:22px}
-    .hero h1{margin:0 0 10px; font-size:30px; letter-spacing:.2px}
-    .hero p{margin:0 0 12px; color:var(--muted); font-size:15px; line-height:1.55}
-    .meta{
-      display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
-    }
-    .chip{
-      font-size:12px;
-      color:var(--muted);
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-      padding:6px 10px;
-      border-radius:999px;
+    .about p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
     }
 
-    .logos{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .logo{
-      padding:10px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      border-radius:16px;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-    }
-    .logo .mark{
-      width:34px; height:34px; border-radius:12px;
-      display:grid; place-items:center;
-      font-weight:750; font-size:13px;
-      background:rgba(122,162,255,.18);
-      border:1px solid rgba(122,162,255,.30);
-      color:rgba(255,255,255,.92);
-    }
-    .logo .lbl{
-      display:none;
-      font-size:12px;
-      color:var(--muted);
-      white-space:nowrap;
-    }
-    @media (max-width: 860px){
-      .logos{
-        flex-direction:row;
-        flex-wrap:wrap;
-      }
-      .logo .lbl{display:block}
+    .links{
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 14px;
+      white-space: nowrap;
     }
 
-    .section{margin-top:22px}
+    .section{
+      margin-top: 26px;
+    }
+
     .section h2{
-      margin:0 0 10px;
-      font-size:16px;
-      letter-spacing:.2px;
-      color:rgba(255,255,255,.88);
+      font-size: 16px;
+      margin: 0 0 12px;
+      letter-spacing: 0.2px;
     }
 
-    .cards{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap:14px;
+    .project{
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
     }
-    @media (max-width: 860px){
-      .cards{grid-template-columns:1fr}
+    .project:first-of-type{ border-top: 0; padding-top: 0; }
+
+    .project .title{
+      font-weight: 600;
+      margin: 0 0 6px;
     }
 
-    .proj{
-      padding:16px;
-      border-radius:var(--r);
-      background:rgba(255,255,255,.05);
-      border:1px solid var(--line);
-    }
-    .proj .t{
-      font-weight:720;
-      margin:0 0 6px;
-      font-size:15px;
-    }
-    .proj .d{
-      margin:0 0 12px;
-      color:var(--muted);
-      font-size:13.5px;
-      line-height:1.55;
-    }
-    .row{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    .btn{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.04);
-      padding:8px 10px;
-      border-radius:12px;
-      font-size:13px;
-      color:var(--text);
-    }
-    .btn:hover{background:rgba(255,255,255,.09)}
-    .btn.primary{
-      border-color: rgba(122,162,255,.45);
-      background: rgba(122,162,255,.14);
-    }
-    .btn.primary:hover{
-      background: rgba(122,162,255,.22);
-    }
-    .small{
-      color:var(--muted2);
-      font-size:12px;
+    .project .desc{
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
-    .twoCol{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:14px;
+    .project .meta{
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 14px;
     }
-    @media (max-width: 860px){
-      .twoCol{grid-template-columns:1fr}
+
+    ul{
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14.5px;
     }
-    ul{margin:10px 0 0 18px; color:var(--muted); line-height:1.6}
-    li{margin:6px 0}
+    li{ margin: 8px 0; }
+
     footer{
-      margin-top:26px;
-      padding-top:16px;
-      border-top:1px solid var(--line);
-      color:var(--muted2);
-      font-size:12.5px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
+      margin-top: 36px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: #777;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
-    .icon{
-      width:16px; height:16px; display:inline-block;
+    @media (max-width: 640px){
+      header{ grid-template-columns: 1fr; }
+      .links{ flex-direction: row; flex-wrap: wrap; gap: 12px; }
     }
-    .sr{position:absolute; left:-9999px}
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <div class="name">Christopher Laloi Dybdahl</div>
+    <header id="about">
+      <div class="about">
+        <h1>Christopher Laloi Dybdahl</h1>
+        <p>
+          I am currently studying <strong>Mathematics and Finance at Imperial College London</strong> and I am an
+          <strong>Aker Scholar</strong>. Previously, I completed a five-year integrated master at <strong>NTNU</strong>,
+          with study exchanges at <strong>Harvard University</strong> and <strong>EPFL</strong>.
+        </p>
       </div>
-      <nav class="nav">
-        <a class="pill" href="#projects">Projects</a>
-        <a class="pill" href="#experience">Experience</a>
-        <a class="pill" href="#contact">Contact</a>
+
+      <nav class="links" aria-label="Links">
+        <a href="https://github.com/christopher-dybdahl" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://www.linkedin.com/in/christopher-dybdahl/" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a href="mailto:chrisdybdahl@gmail.com">Email</a>
+        <a href="assets/CV.pdf" target="_blank" rel="noreferrer">Resume (PDF)</a>
+        <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
       </nav>
-    </div>
+    </header>
 
-    <div class="grid">
-      <!-- Left: logo column -->
-      <aside class="logos" aria-label="Affiliations">
-        <!-- Replace these with real logos later by swapping the contents of .mark with <img> -->
-        <div class="logo" title="Imperial College London">
-          <div class="mark">ICL</div><div class="lbl">Imperial</div>
+    <section class="section" id="projects">
+      <h2>Projects</h2>
+
+      <div class="project">
+        <p class="title">Deep Stochastic Control for Optimal Trade Execution (Intraday Electricity Markets)</p>
+        <p class="desc">
+          Optimal execution under renewable-driven uncertainty and market impact.
+        </p>
+        <div class="meta">
+          <a href="assets/pdfs/Deep_Stochastic_Control_for_Optimal_Trade_Execution_under_Renewable_Induced_Uncertainty_in_Intraday_Electricity_Markets.pdf" target="_blank" rel="noreferrer">PDF</a>
+          <a href="https://github.com/christopher-dybdahl/optimal-execution-electricity-markets" target="_blank" rel="noreferrer">Code</a>
         </div>
-        <div class="logo" title="Aker Scholarship">
-          <div class="mark" style="background:rgba(121,242,192,.14); border-color:rgba(121,242,192,.28)">AK</div>
-          <div class="lbl">Aker</div>
+      </div>
+
+      <div class="project">
+        <p class="title">Rough Path Signatures Pricing</p>
+        <p class="desc">
+          Numerical Method for Model-free Pricing of Exotic Derivatives in Discrete Time Using Rough Path Signatures based on Lyons et al. (2019).
+        </p>
+        <div class="meta">
+          <a href="assets/pdfs/Statistical_Methods_in_Finance_Project.pdf" target="_blank" rel="noreferrer">PDF</a>
+          <a href="https://github.com/christopher-dybdahl/rough-path-signatures-pricing" target="_blank" rel="noreferrer">Code</a>
         </div>
-        <div class="logo" title="NTNU">
-          <div class="mark">NTNU</div><div class="lbl">NTNU</div>
+      </div>
+
+      <div class="project">
+        <p class="title">Mixed Versus Integrated Factor Allocation Strategies</p>
+        <p class="desc">
+          Analyzing Integrated vs. Mixed factor allocation strategies based on Leippold & Rueegg (2017). Features five factors and four portfolio construction techniques applied to US equity data (1962-2024), with robust hypothesis testing on Sharpe ratios.
+        </p>
+        <div class="meta">
+          <a href="assets/pdfs/Portfolio_management_project.pdf" target="_blank" rel="noreferrer">PDF</a>
+          <a href="https://github.com/christopher-dybdahl/integrated-portfolio-factor-allocation" target="_blank" rel="noreferrer">Code</a>
         </div>
-        <div class="logo" title="Harvard University (exchange)">
-          <div class="mark">HU</div><div class="lbl">Harvard</div>
-        </div>
-        <div class="logo" title="EPFL (exchange)">
-          <div class="mark">EPFL</div><div class="lbl">EPFL</div>
-        </div>
-      </aside>
+      </div>
+    </section>
 
-      <!-- Right: main content -->
-      <main>
-        <section class="card hero" id="about">
-          <h1>About</h1>
-          <p>
-            I am currently studying <strong>Mathematics and Finance at Imperial College London</strong> and I am an
-            <strong>Aker Scholar</strong>. Previously, I completed a five-year integrated master at <strong>NTNU</strong>,
-            with study exchanges at <strong>Harvard University</strong> and <strong>EPFL</strong>.
-          </p>
+    <section class="section" id="experience">
+      <h2>Professional experience</h2>
+      <ul>
+        <!-- <li><strong>Project EEE at CERN (Switzerland):</strong> participated in construction of muon detectors and was in charge of the most northern installation.</li> -->
+        <li><strong>ReLU (NTNU Machine Learning Club):</strong> Data Scientist.</li>
+        <!-- <li>Add 2–4 highlights from your CV (internships, research, teaching assistant, etc.).</li> -->
+      </ul>
+    </section>
 
-          <div class="meta" id="contact">
-            <a class="btn primary" href="https://github.com/christopher-dybdahl" target="_blank" rel="noreferrer">
-              <span class="icon" aria-hidden="true">⌂</span> GitHub
-            </a>
-
-            <!-- Replace with your LinkedIn -->
-            <a class="btn" href="https://www.linkedin.com/in/christopher-dybdahl/" target="_blank" rel="noreferrer">
-              <span class="icon" aria-hidden="true">in</span> LinkedIn
-            </a>
-
-            <!-- Replace email -->
-            <a class="btn" href="mailto:chrisdybdahl@gmail.com">
-              <span class="icon" aria-hidden="true">@</span> Email
-            </a>
-
-            <!-- Put your CV at assets/CV.pdf -->
-            <a class="btn" href="assets/CV.pdf" target="_blank" rel="noreferrer">
-              <span class="icon" aria-hidden="true">↓</span> CV (PDF)
-            </a>
-          </div>
-        </section>
-
-        <section class="section" id="projects">
-          <h2>Projects</h2>
-          <div class="cards">
-
-            <article class="proj">
-              <h3 class="t">Deep Stochastic Control for Optimal Trade Execution (Intraday Electricity Markets)</h3>
-              <p class="d">
-                Master’s thesis style project focused on optimal execution under renewable-driven uncertainty and market impact.
-              </p>
-              <div class="row">
-                <a class="btn primary" href="assets/pdfs/Deep_Stochastic_Control_for_Optimal_Trade_Execution_under_Renewable_Induced_Uncertainty_in_Intraday_Electricity_Markets.pdf" target="_blank" rel="noreferrer">
-                  PDF
-                </a>
-                <a class="btn" href="https://github.com/christopher-dybdahl/optimal-execution-electricity-markets" target="_blank" rel="noreferrer">Code</a>
-              </div>
-            </article>
-
-            <article class="proj">
-              <h3 class="t">Statistical Methods in Finance</h3>
-              <p class="d">
-                Empirical finance project using statistical modeling and evaluation, with emphasis on clear methodology and results.
-              </p>
-              <div class="row">
-                <a class="btn primary" href="assets/pdfs/Statistical_Methods_in_Finance_Project.pdf" target="_blank" rel="noreferrer">PDF</a>
-                <a class="btn" href="https://github.com/christopher-dybdahl/rough-path-signatures-pricing" target="_blank" rel="noreferrer">Code</a>
-              </div>
-            </article>
-
-            <article class="proj">
-              <h3 class="t">Portfolio Management Project</h3>
-              <p class="d">
-                Portfolio construction and evaluation: risk, performance attribution, and practical constraints.
-              </p>
-              <div class="row">
-                <a class="btn primary" href="assets/pdfs/Portfolio_management_project.pdf" target="_blank" rel="noreferrer">PDF</a>
-                <a class="btn" href="https://github.com/christopher-dybdahl/integrated-portfolio-factor-allocation" target="_blank" rel="noreferrer">Code</a>
-              </div>
-            </article>
-
-            <!-- <article class="proj">
-              <h3 class="t">Extended Exercise (2024)</h3>
-              <p class="d">
-                Longer-form quantitative exercise with a full written solution and supporting analysis.
-              </p>
-              <div class="row">
-                <a class="btn primary" href="assets/pdfs/Extended%20Exercise%202024.pdf" target="_blank" rel="noreferrer">PDF</a>
-              </div>
-            </article>
-
-            <article class="proj">
-              <h3 class="t">Project 1</h3>
-              <p class="d">
-                Coursework project write-up (add 1–2 lines describing the goal and main result).
-              </p>
-              <div class="row">
-                <a class="btn primary" href="assets/pdfs/Project%201.pdf" target="_blank" rel="noreferrer">PDF</a>
-              </div>
-            </article>
-
-            <article class="proj">
-              <h3 class="t">Project 2</h3>
-              <p class="d">
-                Coursework project write-up (add 1–2 lines describing the goal and main result).
-              </p>
-              <div class="row">
-                <a class="btn primary" href="assets/pdfs/Project%202.pdf" target="_blank" rel="noreferrer">PDF</a>
-              </div>
-            </article>
-
-            <article class="proj">
-              <h3 class="t">IFØ03 Project (Christopher & Syver)</h3>
-              <p class="d">
-                Physics related report (add a short description so readers understand the topic instantly).
-              </p>
-              <div class="row">
-                <a class="btn primary" href="assets/pdfs/IF%C3%9803%20Christopher%20og%20Syver.pdf" target="_blank" rel="noreferrer">PDF</a>
-              </div>
-            </article> -->
-
-          </div>
-
-          <p class="small" style="margin-top:10px;">
-            Tip: keep PDFs in <code>assets/pdfs/</code> and link them here. GitHub Pages will serve them automatically.
-          </p>
-        </section>
-
-        <section class="section" id="experience">
-          <h2>Professional experience and leadership</h2>
-
-          <div class="twoCol">
-            <div class="card" style="padding:16px;">
-              <div style="font-weight:720; margin-bottom:6px;">Highlights</div>
-              <ul>
-                <li><strong>Project EEE at CERN (Switzerland)</strong>: participated in construction of muon detectors; led the most northern installation.</li>
-                <li><strong>ReLU (NTNU Machine Learning community)</strong>: member and contributor (talks, sessions, or leadership as applicable).</li>
-                <li>Add 2–4 bullets from your CV that you want recruiters to notice first (internships, research, tutoring, trading, etc.).</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <footer>
-          <div>© <span id="year"></span> Christopher Laloi Dybdahl</div>
-          <div>
-            <a href="#about">About</a> •
-            <a href="#projects">Projects</a> •
-            <a href="#experience">Experience</a> •
-            <a href="assets/CV.pdf" target="_blank" rel="noreferrer">CV</a>
-          </div>
-        </footer>
-      </main>
-    </div>
+    <footer>
+      <div>© <span id="year"></span> Christopher Laloi Dybdahl</div>
+      <div><a href="#about">About</a> · <a href="#projects">Projects</a> · <a href="#experience">Experience</a></div>
+    </footer>
   </div>
 
   <script>
