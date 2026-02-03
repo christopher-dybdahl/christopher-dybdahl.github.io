@@ -53,9 +53,9 @@
     }
 
     .me{
-      width: 96px;
-      height: 96px;
-      border-radius: 14px;
+      width: 128px;
+      height: 128px;
+      border-radius: 16px;
       object-fit: cover;
       border: 1px solid var(--line);
       background: #fafafa;
@@ -93,7 +93,7 @@
 
     .project{
       display: grid;
-      grid-template-columns: 110px 1fr;
+      grid-template-columns: 160px 1fr;
       gap: 14px;
       padding: 14px 0;
       border-top: 1px solid var(--line);
@@ -101,9 +101,9 @@
     .project:first-of-type{ border-top: 0; padding-top: 0; }
 
     .thumb{
-      width: 110px;
-      height: 74px;
-      border-radius: 10px;
+      width: 160px;
+      height: 100px;
+      border-radius: 12px;
       object-fit: cover;
       border: 1px solid var(--line);
       background: #fafafa;
@@ -150,15 +150,15 @@
     @media (max-width: 640px){
       header{ grid-template-columns: 1fr; }
       .links{ flex-direction: row; flex-wrap: wrap; gap: 12px; }
-      .aboutRow{ grid-template-columns: 72px 1fr; }
-      .me{ width: 72px; height: 72px; border-radius: 12px; }
+      .aboutRow{ grid-template-columns: 96px 1fr; }
+      .me{ width: 96px; height: 96px; border-radius: 12px; }
 
       .project{
         grid-template-columns: 1fr;
       }
       .thumb{
         width: 100%;
-        height: 160px;
+        height: 200px;
       }
     }
   </style>
@@ -256,7 +256,7 @@
       <h2>Professional Experience</h2>
       <ul>
         <li><strong>ReLU (NTNU Machine Learning Club):</strong> Data Scientist.</li>
-        <li><strong>Project Extreme Energy Events at CERN (Switzerland):</strong> participated in construction of muon detectors and was in charge of the most northern installation.</li>
+        <li><strong>Project Extreme Energy Events at CERN (Switzerland):</strong> Participated in construction of muon detectors and was in charge of the most northern installation.</li>
       </ul>
     </section>
 
