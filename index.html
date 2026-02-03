@@ -45,6 +45,22 @@
       margin-bottom: 26px;
     }
 
+    .aboutRow{
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .me{
+      width: 96px;
+      height: 96px;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      background: #fafafa;
+    }
+
     h1{
       font-size: 28px;
       margin: 0 0 10px;
@@ -76,10 +92,22 @@
     }
 
     .project{
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 14px;
       padding: 14px 0;
       border-top: 1px solid var(--line);
     }
     .project:first-of-type{ border-top: 0; padding-top: 0; }
+
+    .thumb{
+      width: 110px;
+      height: 74px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      background: #fafafa;
+    }
 
     .project .title{
       font-weight: 600;
@@ -122,6 +150,16 @@
     @media (max-width: 640px){
       header{ grid-template-columns: 1fr; }
       .links{ flex-direction: row; flex-wrap: wrap; gap: 12px; }
+      .aboutRow{ grid-template-columns: 72px 1fr; }
+      .me{ width: 72px; height: 72px; border-radius: 12px; }
+
+      .project{
+        grid-template-columns: 1fr;
+      }
+      .thumb{
+        width: 100%;
+        height: 160px;
+      }
     }
   </style>
 </head>
@@ -130,12 +168,19 @@
   <div class="wrap">
     <header id="about">
       <div class="about">
-        <h1>Christopher Laloi Dybdahl</h1>
-        <p>
-          I am currently studying <strong>Mathematics and Finance at Imperial College London</strong> and I am an
-          <strong>Aker Scholar</strong>. Previously, I completed a five-year integrated master at <strong>NTNU</strong>,
-          with study exchanges at <strong>Harvard University</strong> and <strong>EPFL</strong>.
-        </p>
+        <div class="aboutRow">
+          <!-- Put your photo at assets/img/me.jpg -->
+          <img class="me" src="assets/img/me.jpg" alt="Portrait of Christopher Laloi Dybdahl" />
+
+          <div>
+            <h1>Christopher Laloi Dybdahl</h1>
+            <p>
+              I am currently studying <strong>Mathematics and Finance at Imperial College London</strong> and I am an
+              <strong>Aker Scholar</strong>. Previously, I completed a five-year integrated master at <strong>NTNU</strong>,
+              with study exchanges at <strong>Harvard University</strong> and <strong>EPFL</strong>.
+            </p>
+          </div>
+        </div>
       </div>
 
       <nav class="links" aria-label="Links">
@@ -152,46 +197,62 @@
       <h2>Projects</h2>
 
       <div class="project">
-        <p class="title">Deep Stochastic Control for Optimal Trade Execution in Intraday Electricity Markets</p>
-        <p class="desc">
-          Optimal execution under renewable-driven uncertainty and market impact.
-        </p>
-        <div class="meta">
-          <a href="assets/deep_optimal_control.pdf" target="_blank" rel="noreferrer">PDF</a>
-          <a href="https://github.com/christopher-dybdahl/optimal-execution-electricity-markets" target="_blank" rel="noreferrer">Code</a>
+        <!-- Put a thumbnail at assets/img/signatures.jpg -->
+        <img class="thumb" src="assets/img/signatures.jpg" alt="Thumbnail for Rough Path Signatures Pricing" />
+        <div>
+          <p class="title">Rough Path Signatures Pricing</p>
+          <p class="desc">
+            Numerical Method for Model-free Pricing of Exotic Derivatives in Discrete Time Using Rough Path Signatures based on Lyons et al. (2019).
+          </p>
+          <div class="meta">
+            <a href="assets/pdfs/signature_pricing.pdf" target="_blank" rel="noreferrer">PDF</a>
+            <a href="https://github.com/christopher-dybdahl/rough-path-signatures-pricing" target="_blank" rel="noreferrer">Code</a>
+          </div>
         </div>
       </div>
 
       <div class="project">
-        <p class="title">Rough Path Signatures Pricing</p>
-        <p class="desc">
-          Numerical Method for Model-free Pricing of Exotic Derivatives in Discrete Time Using Rough Path Signatures based on Lyons et al. (2019).
-        </p>
-        <div class="meta">
-          <a href="assets/signature_pricing.pdf" target="_blank" rel="noreferrer">PDF</a>
-          <a href="https://github.com/christopher-dybdahl/rough-path-signatures-pricing" target="_blank" rel="noreferrer">Code</a>
+        <!-- Put a thumbnail at assets/img/factor.jpg -->
+        <img class="thumb" src="assets/img/factor.jpg" alt="Thumbnail for Mixed Versus Integrated Factor Allocation Strategies" />
+        <div>
+          <p class="title">Mixed Versus Integrated Factor Allocation Strategies</p>
+          <p class="desc">
+            Analyzing integrated vs. mixed factor allocation strategies based on Leippold & Rueegg (2017). Five factors and four portfolio construction techniques on US equity data (1962-2024), with hypothesis testing on Sharpe ratios.
+          </p>
+          <div class="meta">
+            <a href="assets/pdfs/factor_allocation_strategy.pdf" target="_blank" rel="noreferrer">PDF</a>
+            <a href="https://github.com/christopher-dybdahl/integrated-portfolio-factor-allocation" target="_blank" rel="noreferrer">Code</a>
+          </div>
         </div>
       </div>
 
       <div class="project">
-        <p class="title">Mixed Versus Integrated Factor Allocation Strategies</p>
-        <p class="desc">
-          Analyzing Integrated vs. Mixed factor allocation strategies based on Leippold & Rueegg (2017). Features five factors and four portfolio construction techniques applied to US equity data (1962-2024), with robust hypothesis testing on Sharpe ratios.
-        </p>
-        <div class="meta">
-          <a href="assets/factor_allocation_strategy.pdf" target="_blank" rel="noreferrer">PDF</a>
-          <a href="https://github.com/christopher-dybdahl/integrated-portfolio-factor-allocation" target="_blank" rel="noreferrer">Code</a>
+        <!-- Put a thumbnail at assets/img/execution.jpg -->
+        <img class="thumb" src="assets/img/execution.jpg" alt="Thumbnail for Deep Stochastic Control for Optimal Trade Execution" />
+        <div>
+          <p class="title">Deep Stochastic Control for Optimal Trade Execution in Intraday Electricity Markets</p>
+          <p class="desc">
+            Optimal execution under renewable-driven uncertainty and market impact.
+          </p>
+          <div class="meta">
+            <a href="assets/pdfs/deep_optimal_control.pdf" target="_blank" rel="noreferrer">PDF</a>
+            <a href="https://github.com/christopher-dybdahl/optimal-execution-electricity-markets" target="_blank" rel="noreferrer">Code</a>
+          </div>
         </div>
       </div>
 
       <div class="project">
-        <p class="title">Comparative Study of Value-at-Risk and Expected Shortfall Forecasting Models on German Electricity Futures</p>
-        <p class="desc">
-          Comparing Value-at-Risk and Expected Shortfall Forecasting Models on German Electricity Futures.
-        </p>
-        <div class="meta">
-          <a href="assets/risk_models_review.pdf" target="_blank" rel="noreferrer">PDF</a>
-          <a href="https://github.com/christopher-dybdahl/var-es-toolbox-r" target="_blank" rel="noreferrer">Code</a>
+        <!-- Put a thumbnail at assets/img/risk.jpg -->
+        <img class="thumb" src="assets/img/risk.jpg" alt="Thumbnail for VaR and ES Forecasting Models on German Electricity Futures" />
+        <div>
+          <p class="title">Comparative Study of Value-at-Risk and Expected Shortfall Forecasting Models on German Electricity Futures</p>
+          <p class="desc">
+            Comparing VaR and ES forecasting models on German electricity futures.
+          </p>
+          <div class="meta">
+            <a href="assets/pdfs/risk_models_review.pdf" target="_blank" rel="noreferrer">PDF</a>
+            <a href="https://github.com/christopher-dybdahl/var-es-toolbox-r" target="_blank" rel="noreferrer">Code</a>
+          </div>
         </div>
       </div>
     </section>
@@ -199,9 +260,8 @@
     <section class="section" id="experience">
       <h2>Professional experience</h2>
       <ul>
-        <!-- <li><strong>Project EEE at CERN (Switzerland):</strong> participated in construction of muon detectors and was in charge of the most northern installation.</li> -->
         <li><strong>ReLU (NTNU Machine Learning Club):</strong> Data Scientist.</li>
-        <!-- <li>Add 2–4 highlights from your CV (internships, research, teaching assistant, etc.).</li> -->
+        <li><strong>Project EEE at CERN (Switzerland):</strong> participated in construction of muon detectors and was in charge of the most northern installation.</li>
       </ul>
     </section>
 
