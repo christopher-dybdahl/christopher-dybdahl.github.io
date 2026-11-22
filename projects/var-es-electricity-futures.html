@@ -30,7 +30,7 @@
 
       <p class="lead">
         Which risk model should a power trading desk actually use? Electricity futures combine fat tails, volatility
-        clustering and structural shifts — the 2021–22 energy crisis sits in the middle of our sample — making them a
+        clustering and structural shifts (the 2021–22 energy crisis sits in the middle of our sample), making them a
         demanding testbed for tail-risk forecasting. We benchmarked <strong>31 joint VaR–Expected Shortfall models</strong>
         on eight EEX German futures (base and peak load; day, month, quarter and year front contracts; 1,239 daily
         observations, 2019–2024), with the model set chosen through a bibliometric review of 272 papers.
@@ -55,14 +55,14 @@
            \;-\; \frac{e_t - v_t + \mathbf{1}\{r_t \le v_t\}\,(v_t - r_t)/\alpha}{e_t}, $$
       </p>
       <p>
-        complemented by the full backtesting battery — unconditional and conditional coverage, dynamic quantile and
-        VaR duration tests for VaR; expected shortfall regression and corrected-over-cycle tests for ES — and model
+        complemented by the full backtesting battery (unconditional and conditional coverage, dynamic quantile and
+        VaR duration tests for VaR; expected shortfall regression and corrected-over-cycle tests for ES) and model
         ranking via the <strong>Model Confidence Set</strong> of Hansen, Lunde and Nason (2011).
       </p>
 
       <h3>Findings</h3>
       <ul>
-        <li><strong>No single family dominates</strong> across contracts and confidence levels — a result that matters
+        <li><strong>No single family dominates</strong> across contracts and confidence levels, a result that matters
           for desks standardising on one model.</li>
         <li><strong>Filtered historical simulation</strong> is the most reliable at the 2.5% level;
           <strong>CAViaR-type quantile regressions</strong> lead at 5%.</li>

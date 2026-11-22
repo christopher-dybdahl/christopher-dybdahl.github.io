@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Optimal Make–Take Contracts via Deep HJB Solvers</title>
-  <meta name="description" content="Principal–agent incentive design between an exchange and a market maker quoting in lit and dark pools, solved with neural Hamiltonian maximisation and an actor–critic backward HJB sweep." />
+  <meta name="description" content="A nested principal–agent stochastic control problem between an exchange and a market maker, solved end-to-end with neural networks: differentiable Hamiltonian maximisation and a backward actor–critic HJB scheme." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231a4d8f'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' fill='white' text-anchor='middle'%3ECD%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="../assets/css/site.css" />
   <script src="../assets/js/theme.js"></script>
@@ -29,25 +29,29 @@
       <p class="lead">
         How should an exchange design make–take fees when its market maker also internalises flow in a dark pool?
         Following Baldacci, Manziuk, Mastrolia and Rosenbaum (2019), this is a <strong>principal–agent problem</strong>:
-        the exchange (principal) posts an incentive contract over the market maker's executed volumes; the market
-        maker (agent) responds with optimal bid and ask quotes in both the lit book and the dark pool, managing
-        inventory risk. The contract that emerges rewards liquidity provision asymmetrically in inventory — paying
-        the market maker to quote on the side that reduces its imbalance.
+        the exchange posts an incentive contract over the market maker's executed volumes, and the market maker
+        responds with optimal bid and ask quotes in the lit book and the dark pool while managing inventory risk.
+        Neither of the two nested value functions has a usable closed form, so we solved the whole problem with
+        neural networks. Methodologically this is the same programme as my NTNU thesis: deep learning as the
+        numerical method for high-dimensional Hamilton–Jacobi–Bellman equations that classical solvers cannot
+        handle well.
       </p>
 
-      <h3>A nested stochastic control problem</h3>
+      <h3>Two coupled learning problems</h3>
       <p>
-        The agent's optimal quotes maximise a Hamiltonian over four controls (bid/ask in lit and dark); given the
-        agent's best response, the principal's value function solves its own HJB equation over the space of
-        incentive schedules. We solve the nested problem with neural networks end-to-end:
+        The structure of the control problem maps directly onto two neural training loops:
       </p>
       <ul>
-        <li><strong>Agent best response.</strong> A neural network \(L(z, q)\) trained to maximise the continuous-time
-          Hamiltonian pointwise over quotes, as a function of the incentive \(z\) and inventory \(q\).</li>
-        <li><strong>Principal's HJB.</strong> A backward-in-time <strong>actor–critic sweep</strong>: at each time
-          step the critic approximates the exchange's value function and the actor outputs the incentive schedule,
-          with the critic target advanced by a <strong>Heun predictor–corrector</strong> scheme and a stochastic
-          exploration loss stabilising the actor.</li>
+        <li><strong>The agent's best response, learned without labels.</strong> A network \(L(z, q)\) takes the
+          incentive \(z\) and inventory \(q\) and outputs the four quotes (bid and ask, lit and dark). It is trained
+          by maximising the continuous-time Hamiltonian directly through the computational graph: the economic
+          objective itself is the training signal, so no solved examples are ever needed.</li>
+        <li><strong>The principal's HJB, solved as supervised learning.</strong> Backward induction turns the
+          exchange's PDE into a sequence of regression problems, one per time step, with an
+          <strong>actor–critic</strong> split: the critic approximates the exchange's value function and the actor
+          outputs the incentive schedule. The critic's regression target is advanced in time by a
+          <strong>Heun predictor–corrector</strong> step, and a stochastic exploration loss keeps the actor from
+          collapsing onto degenerate contracts early in training.</li>
       </ul>
       <p>
         $$ V^{E}(t, q) \;=\; \sup_{z}\; \mathbb{E}\!\left[ \,\text{fees} - \text{incentive payments} \;\middle|\;
@@ -55,11 +59,15 @@
       </p>
       <p>
         solved backwards from the terminal date one time step at a time, each step a supervised learning problem.
+        The repository implements two solver regimes: a sequential backward sweep, which is more accurate per time
+        step, and a parallel Jacobi-style update over all time steps at once, which trades some accuracy for much
+        cheaper iterations. Choosing between them is a standard compute-versus-accuracy decision rather than a
+        modelling one.
       </p>
 
       <h3>Results</h3>
       <ul>
-        <li>The learned incentive schedules are monotone in inventory and steeper in the dark pool — the exchange
+        <li>The learned incentive schedules are monotone in inventory and steeper in the dark pool: the exchange
           pays most for liquidity exactly where adverse selection is highest.</li>
         <li>Optimal quoted volumes and the resulting fee revenue were computed across three parameter regimes
           (tick size, dark-pool intensity, inventory aversion).</li>
@@ -68,14 +76,14 @@
       </ul>
 
       <figure>
-        <img src="../assets/img/market_maker.jpg" alt="Learned incentive schedules by inventory for lit and dark pool quotes" loading="lazy" />
-        <figcaption>Learned incentive schedules as a function of market-maker inventory, for bid/ask quotes in the lit book and the dark pool.</figcaption>
+        <img src="../assets/img/market_maker.jpg" alt="Optimal quoted volumes by inventory for lit and dark pool quotes" loading="lazy" />
+        <figcaption>Optimal quoted volumes for bid and ask quotes in the lit book and the dark pool, as a function of market-maker inventory, under the learned incentive contract.</figcaption>
       </figure>
 
       <p class="muted" style="font-size: 13.5px;">
-        Implementation note: the repository's current solver uses a parallel (Jacobi-style) update over time steps
-        with a Heun critic target; the report's headline runs used a sequential backward sweep at finer time
-        resolution. Both variants are described in the repository README.
+        Implementation note: the repository's current solver uses the parallel Jacobi-style update with a Heun
+        critic target; the report's headline runs used the sequential backward sweep at finer time resolution.
+        Both variants are described in the repository README.
       </p>
     </article>
 

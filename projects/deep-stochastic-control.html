@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Deep Stochastic Control for Optimal Execution</title>
-  <meta name="description" content="A physics-informed deep BSDE solver for non-smooth HJB equations in optimal trade execution under renewable-induced uncertainty in intraday electricity markets." />
+  <meta name="description" content="A physics-informed deep BSDE solver for non-smooth HJB equations in optimal trade execution under renewable-induced uncertainty in intraday electricity markets, trained with distributed data-parallel PyTorch on GPU clusters." />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231a4d8f'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' fill='white' text-anchor='middle'%3ECD%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="../assets/css/site.css" />
   <script src="../assets/js/theme.js"></script>
@@ -29,32 +29,43 @@
       <p class="lead">
         A producer selling into the continuous intraday electricity market must unwind a position whose very size is
         uncertain: renewable forecasts keep revising the volume that will actually be delivered. We formulate this as a
-        finite-horizon stochastic control problem in the Almgren–Chriss tradition — extended with renewable forecast
-        uncertainty, permanent and temporary price impact, and a bid–ask spread — and solve it with a deep BSDE method
-        designed for closed-loop control. The problem was motivated by discussions with Statkraft's intraday trading desks.
+        finite-horizon stochastic control problem in the Almgren–Chriss tradition, extended with renewable forecast
+        uncertainty, permanent and temporary price impact, and a bid–ask spread. The frictions put the problem out of
+        reach of classical solvers, so we built a deep learning method for it: neural networks as the numerical
+        scheme for a mathematical problem, not as a black-box trading signal. The problem itself was motivated by
+        discussions with Statkraft's intraday trading desks.
       </p>
 
       <h3>Why the standard tools break</h3>
       <p>
         The spread makes the Hamiltonian non-smooth: buying and selling face different prices, so the value function's
-        gradient enters through a kinked term and classical verification arguments and smooth PDE solvers degrade. The
+        gradient enters through a kinked term, and classical verification arguments and smooth PDE solvers degrade. The
         dynamic programming equation is a semilinear HJB equation
       </p>
       <p>
         $$ \partial_t V + \sup_{u}\,\Big\{ \mathcal{L}^{u} V + f(x, u) \Big\} = 0, \qquad V(T,\cdot) = g, $$
       </p>
       <p>
-        which we recast as a forward–backward SDE and approximate with neural networks: the value process is a hybrid
-        NAIS-Net–LSTM, and the feedback control at each state is obtained by minimising the Hamiltonian directly rather
-        than by differentiating a fitted value surface.
+        which we recast as a forward–backward SDE in the deep BSDE tradition of Han, Jentzen and E, and approximate
+        with neural networks trained on simulated paths of the market state.
       </p>
 
-      <h3>Physics-informed training</h3>
+      <h3>Architecture and loss design</h3>
       <p>
-        The solver is trained on simulated state paths with a composite loss: a BSDE-consistency term that enforces the
-        backward dynamics along paths, a terminal condition term, the control objective itself, and a PINN-style
-        penalty on the HJB residual,
+        The solver's accuracy lives or dies on two design choices:
       </p>
+      <ul>
+        <li><strong>Network architecture.</strong> The value process is a hybrid <strong>NAIS-Net–LSTM</strong>: a
+          non-autonomous input-output stable residual network embeds the market state at each time step, and an LSTM
+          carries the value process across time, matching the sequential structure of the BSDE. The codebase supports
+          a family of alternatives (fully connected, ResNet and NAIS-Net subnets, combined with plain, residual and
+          NAIS-type LSTM backbones), and the hybrid is the configuration we settled on after experimenting across
+          that family.</li>
+        <li><strong>Physics-informed composite loss.</strong> The feedback control at each state is obtained by
+          minimising the Hamiltonian directly rather than by differentiating a fitted value surface, and training
+          combines a BSDE-consistency term along paths, a terminal condition term, the control objective itself, and
+          a PINN-style penalty on the HJB residual:</li>
+      </ul>
       <p>
         $$ \mathcal{J} \;=\; \lambda_{\text{BSDE}}\,\mathbb{E}\!\left[ \big| Y_T - g(X_T) \big|^2 \right]
            \;+\; \lambda_{\text{cost}}\, \mathbb{E}\!\left[ \textstyle\int_0^T f(X_t, u_t)\,dt \right]
@@ -62,8 +73,18 @@
       </p>
       <p>
         The HJB residual acts as a regulariser that keeps the learned value function consistent with the dynamic
-        programming principle away from the sampled paths — this is what lets the method stay stable where the
-        Hamiltonian is kinked. Training ran on NTNU's Idun HPC cluster via Slurm.
+        programming principle away from the sampled paths; this is what lets the method stay stable where the
+        Hamiltonian is kinked.
+      </p>
+
+      <h3>Training at scale</h3>
+      <p>
+        There is no fixed dataset: every batch is 16,384 market-state paths simulated on the fly, so the data
+        pipeline is part of the solver. Training ran on NTNU's Idun HPC cluster under Slurm, distributed across
+        four NVIDIA H100 GPUs with PyTorch DistributedDataParallel launched via torchrun, with per-rank path
+        simulation, explicit GPU memory management in the training loop, learning-rate scheduling, and
+        checkpointing of full optimizer and scheduler state so long experiment campaigns could be resumed and
+        compared across configurations.
       </p>
 
       <h3>Validation and results</h3>
@@ -72,7 +93,7 @@
           (in the style of Aïd et al.); the learned policy reproduces it, which pins down solver correctness before
           any friction is added.</li>
         <li><strong>Threshold behaviour under spreads.</strong> With a bid–ask spread the learned policy develops
-          a no-trade region — it waits until the inventory signal clears the cost of crossing the spread, a
+          a no-trade region: it waits until the inventory signal clears the cost of crossing the spread, a
           qualitative feature the frictionless solution cannot express.</li>
         <li><strong>Out-of-sample performance.</strong> Calibrated to signed EPEX SPOT trades from the German market
           (permanent impact significant at the 1% level), the neural policy achieves lower expected execution cost
