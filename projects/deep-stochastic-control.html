@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Deep Stochastic Control for Optimal Execution</title>
+  <meta name="description" content="A physics-informed deep BSDE solver for non-smooth HJB equations in optimal trade execution under renewable-induced uncertainty in intraday electricity markets." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231a4d8f'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' fill='white' text-anchor='middle'%3ECD%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script src="../assets/js/theme.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" />
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <article>
+      <a class="backlink" href="../index.html">← Christopher Dybdahl</a>
+      <h1>Deep Stochastic Control for Optimal Trade Execution in Intraday Electricity Markets</h1>
+      <p class="venue">MSc thesis, NTNU, July 2025 (grade A) · with Alexander Dybdahl and Syver Nes · supervised by Ståle Størdal, Jacob Laading and Sjur Westgaard · an extension of this work is under double-blind review at <em>Management Science</em></p>
+
+      <div class="meta">
+        <a href="../assets/pdfs/thesis.pdf" target="_blank" rel="noreferrer">Thesis (PDF)</a>
+        <a href="https://github.com/alexander-dybdahl/optimal-execution-electricity-markets" target="_blank" rel="noreferrer">Code (joint repo)</a>
+      </div>
+
+      <p class="lead">
+        A producer selling into the continuous intraday electricity market must unwind a position whose very size is
+        uncertain: renewable forecasts keep revising the volume that will actually be delivered. We formulate this as a
+        finite-horizon stochastic control problem in the Almgren–Chriss tradition — extended with renewable forecast
+        uncertainty, permanent and temporary price impact, and a bid–ask spread — and solve it with a deep BSDE method
+        designed for closed-loop control. The problem was motivated by discussions with Statkraft's intraday trading desks.
+      </p>
+
+      <h3>Why the standard tools break</h3>
+      <p>
+        The spread makes the Hamiltonian non-smooth: buying and selling face different prices, so the value function's
+        gradient enters through a kinked term and classical verification arguments and smooth PDE solvers degrade. The
+        dynamic programming equation is a semilinear HJB equation
+      </p>
+      <p>
+        $$ \partial_t V + \sup_{u}\,\Big\{ \mathcal{L}^{u} V + f(x, u) \Big\} = 0, \qquad V(T,\cdot) = g, $$
+      </p>
+      <p>
+        which we recast as a forward–backward SDE and approximate with neural networks: the value process is a hybrid
+        NAIS-Net–LSTM, and the feedback control at each state is obtained by minimising the Hamiltonian directly rather
+        than by differentiating a fitted value surface.
+      </p>
+
+      <h3>Physics-informed training</h3>
+      <p>
+        The solver is trained on simulated state paths with a composite loss: a BSDE-consistency term that enforces the
+        backward dynamics along paths, a terminal condition term, the control objective itself, and a PINN-style
+        penalty on the HJB residual,
+      </p>
+      <p>
+        $$ \mathcal{J} \;=\; \lambda_{\text{BSDE}}\,\mathbb{E}\!\left[ \big| Y_T - g(X_T) \big|^2 \right]
+           \;+\; \lambda_{\text{cost}}\, \mathbb{E}\!\left[ \textstyle\int_0^T f(X_t, u_t)\,dt \right]
+           \;+\; \lambda_{\text{HJB}}\, \big\| \text{HJB residual} \big\|^2 . $$
+      </p>
+      <p>
+        The HJB residual acts as a regulariser that keeps the learned value function consistent with the dynamic
+        programming principle away from the sampled paths — this is what lets the method stay stable where the
+        Hamiltonian is kinked. Training ran on NTNU's Idun HPC cluster via Slurm.
+      </p>
+
+      <h3>Validation and results</h3>
+      <ul>
+        <li><strong>Exact benchmark recovery.</strong> With zero spread the problem admits an analytical solution
+          (in the style of Aïd et al.); the learned policy reproduces it, which pins down solver correctness before
+          any friction is added.</li>
+        <li><strong>Threshold behaviour under spreads.</strong> With a bid–ask spread the learned policy develops
+          a no-trade region — it waits until the inventory signal clears the cost of crossing the spread, a
+          qualitative feature the frictionless solution cannot express.</li>
+        <li><strong>Out-of-sample performance.</strong> Calibrated to signed EPEX SPOT trades from the German market
+          (permanent impact significant at the 1% level), the neural policy achieves lower expected execution cost
+          than both TWAP and the analytical policy across most scenarios; the analytical policy retains an edge only
+          under the highest imbalance penalties.</li>
+      </ul>
+
+      <figure>
+        <img src="../assets/img/execution.jpg" alt="Execution trajectories of the learned policy" loading="lazy" />
+        <figcaption>Learned execution behaviour under renewable forecast revisions and market frictions.</figcaption>
+      </figure>
+
+      <p class="muted" style="font-size: 13.5px;">
+        The journal extension tightens the formulation and the market calibration; details are withheld here while
+        the manuscript is under double-blind review.
+      </p>
+    </article>
+
+    <footer>
+      <div>© Christopher Laloi Dybdahl</div>
+      <div><a href="../index.html">Home</a></div>
+    </footer>
+  </div>
+</body>
+</html>

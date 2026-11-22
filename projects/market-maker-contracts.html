@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Optimal Make–Take Contracts via Deep HJB Solvers</title>
+  <meta name="description" content="Principal–agent incentive design between an exchange and a market maker quoting in lit and dark pools, solved with neural Hamiltonian maximisation and an actor–critic backward HJB sweep." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231a4d8f'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' fill='white' text-anchor='middle'%3ECD%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script src="../assets/js/theme.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" />
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <article>
+      <a class="backlink" href="../index.html">← Christopher Dybdahl</a>
+      <h1>Optimal Make–Take Contracts between an Exchange and a Market Maker</h1>
+      <p class="venue">Market Microstructure project, Imperial College London, 2026 · with T. Delforge and J. Jareño García</p>
+
+      <div class="meta">
+        <a href="../assets/pdfs/market_maker_contracts.pdf" target="_blank" rel="noreferrer">Report (PDF)</a>
+        <a href="https://github.com/christopher-dybdahl/optimal-market-maker-exchange-contract-drl" target="_blank" rel="noreferrer">Code</a>
+      </div>
+
+      <p class="lead">
+        How should an exchange design make–take fees when its market maker also internalises flow in a dark pool?
+        Following Baldacci, Manziuk, Mastrolia and Rosenbaum (2019), this is a <strong>principal–agent problem</strong>:
+        the exchange (principal) posts an incentive contract over the market maker's executed volumes; the market
+        maker (agent) responds with optimal bid and ask quotes in both the lit book and the dark pool, managing
+        inventory risk. The contract that emerges rewards liquidity provision asymmetrically in inventory — paying
+        the market maker to quote on the side that reduces its imbalance.
+      </p>
+
+      <h3>A nested stochastic control problem</h3>
+      <p>
+        The agent's optimal quotes maximise a Hamiltonian over four controls (bid/ask in lit and dark); given the
+        agent's best response, the principal's value function solves its own HJB equation over the space of
+        incentive schedules. We solve the nested problem with neural networks end-to-end:
+      </p>
+      <ul>
+        <li><strong>Agent best response.</strong> A neural network \(L(z, q)\) trained to maximise the continuous-time
+          Hamiltonian pointwise over quotes, as a function of the incentive \(z\) and inventory \(q\).</li>
+        <li><strong>Principal's HJB.</strong> A backward-in-time <strong>actor–critic sweep</strong>: at each time
+          step the critic approximates the exchange's value function and the actor outputs the incentive schedule,
+          with the critic target advanced by a <strong>Heun predictor–corrector</strong> scheme and a stochastic
+          exploration loss stabilising the actor.</li>
+      </ul>
+      <p>
+        $$ V^{E}(t, q) \;=\; \sup_{z}\; \mathbb{E}\!\left[ \,\text{fees} - \text{incentive payments} \;\middle|\;
+           \text{MM best response } L^{*}(z, q) \right], $$
+      </p>
+      <p>
+        solved backwards from the terminal date one time step at a time, each step a supervised learning problem.
+      </p>
+
+      <h3>Results</h3>
+      <ul>
+        <li>The learned incentive schedules are monotone in inventory and steeper in the dark pool — the exchange
+          pays most for liquidity exactly where adverse selection is highest.</li>
+        <li>Optimal quoted volumes and the resulting fee revenue were computed across three parameter regimes
+          (tick size, dark-pool intensity, inventory aversion).</li>
+        <li>The report also analyses Hawkes-driven order flow and outlines a deep BSDE formulation as an
+          alternative solver for the principal's equation.</li>
+      </ul>
+
+      <figure>
+        <img src="../assets/img/market_maker.jpg" alt="Learned incentive schedules by inventory for lit and dark pool quotes" loading="lazy" />
+        <figcaption>Learned incentive schedules as a function of market-maker inventory, for bid/ask quotes in the lit book and the dark pool.</figcaption>
+      </figure>
+
+      <p class="muted" style="font-size: 13.5px;">
+        Implementation note: the repository's current solver uses a parallel (Jacobi-style) update over time steps
+        with a Heun critic target; the report's headline runs used a sequential backward sweep at finer time
+        resolution. Both variants are described in the repository README.
+      </p>
+    </article>
+
+    <footer>
+      <div>© Christopher Laloi Dybdahl</div>
+      <div><a href="../index.html">Home</a></div>
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VaR and ES Forecasting on German Power Futures</title>
+  <meta name="description" content="A comparative study of 31 VaR and Expected Shortfall forecasting models on German electricity futures, with elicitability-based backtests and the Model Confidence Set." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231a4d8f'/%3E%3Ctext x='32' y='42' font-family='Georgia,serif' font-size='30' fill='white' text-anchor='middle'%3ECD%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="../assets/css/site.css" />
+  <script src="../assets/js/theme.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.css" />
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.11/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <article>
+      <a class="backlink" href="../index.html">← Christopher Dybdahl</a>
+      <h1>Risk Forecasting of Electricity Futures: VaR and Expected Shortfall on German Power</h1>
+      <p class="venue">Financial Engineering specialization project, NTNU, autumn 2024 (grade A) · with Syver Nes</p>
+
+      <div class="meta">
+        <a href="../assets/pdfs/risk_models_review.pdf" target="_blank" rel="noreferrer">Report (PDF)</a>
+        <a href="https://github.com/christopher-dybdahl/var-es-toolbox-r" target="_blank" rel="noreferrer">Code (R toolbox)</a>
+        <a href="https://github.com/christopher-dybdahl/filtered-historical-simulation" target="_blank" rel="noreferrer">FHS</a>
+        <a href="https://github.com/christopher-dybdahl/CAViaR-ES" target="_blank" rel="noreferrer">CAViaR-ES</a>
+      </div>
+
+      <p class="lead">
+        Which risk model should a power trading desk actually use? Electricity futures combine fat tails, volatility
+        clustering and structural shifts — the 2021–22 energy crisis sits in the middle of our sample — making them a
+        demanding testbed for tail-risk forecasting. We benchmarked <strong>31 joint VaR–Expected Shortfall models</strong>
+        on eight EEX German futures (base and peak load; day, month, quarter and year front contracts; 1,239 daily
+        observations, 2019–2024), with the model set chosen through a bibliometric review of 272 papers.
+      </p>
+
+      <h3>Model families</h3>
+      <ul>
+        <li>Historical and <strong>filtered historical simulation</strong> (EWMA and GARCH filters);</li>
+        <li><strong>GARCH and GJR-GARCH</strong> with normal, Student-t and skewed-t innovations;</li>
+        <li><strong>EVT-GARCH</strong> (peaks-over-threshold on standardised residuals);</li>
+        <li><strong>GAS</strong> models with score-driven dynamics;</li>
+        <li><strong>CAViaR</strong>-type semiparametric quantile regressions extended to joint ES estimation.</li>
+      </ul>
+
+      <h3>Evaluation</h3>
+      <p>
+        Since ES is not elicitable alone but is jointly elicitable with VaR, models are ranked by the strictly
+        consistent joint loss (Fissler–Ziegel class, AL specification)
+      </p>
+      <p>
+        $$ L_t \;=\; -\log\!\left( \frac{\alpha - \mathbf{1}\{r_t \le v_t\}}{e_t} \right)
+           \;-\; \frac{e_t - v_t + \mathbf{1}\{r_t \le v_t\}\,(v_t - r_t)/\alpha}{e_t}, $$
+      </p>
+      <p>
+        complemented by the full backtesting battery — unconditional and conditional coverage, dynamic quantile and
+        VaR duration tests for VaR; expected shortfall regression and corrected-over-cycle tests for ES — and model
+        ranking via the <strong>Model Confidence Set</strong> of Hansen, Lunde and Nason (2011).
+      </p>
+
+      <h3>Findings</h3>
+      <ul>
+        <li><strong>No single family dominates</strong> across contracts and confidence levels — a result that matters
+          for desks standardising on one model.</li>
+        <li><strong>Filtered historical simulation</strong> is the most reliable at the 2.5% level;
+          <strong>CAViaR-type quantile regressions</strong> lead at 5%.</li>
+        <li>Plain historical simulation deteriorates sharply on longer-dated contracts, where distributional shifts
+          dominate the lookback window.</li>
+      </ul>
+
+      <figure>
+        <img src="../assets/img/risk.jpg" alt="VaR forecasts against realised returns on German power futures" loading="lazy" />
+        <figcaption>Tail-risk forecasts against realised returns across the 2021–22 energy crisis.</figcaption>
+      </figure>
+    </article>
+
+    <footer>
+      <div>© Christopher Laloi Dybdahl</div>
+      <div><a href="../index.html">Home</a></div>
+    </footer>
+  </div>
+</body>
+</html>
