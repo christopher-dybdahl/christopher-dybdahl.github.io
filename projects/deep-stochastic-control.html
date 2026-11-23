@@ -29,11 +29,10 @@
       <p class="lead">
         A producer selling into the continuous intraday electricity market must unwind a position whose very size is
         uncertain: renewable forecasts keep revising the volume that will actually be delivered. We formulate this as a
-        finite-horizon stochastic control problem in the Almgren–Chriss tradition, extended with renewable forecast
+        finite-horizon stochastic control problem, an Almgren–Chriss execution model extended with renewable forecast
         uncertainty, permanent and temporary price impact, and a bid–ask spread. The frictions put the problem out of
-        reach of classical solvers, so we built a deep learning method for it: neural networks as the numerical
-        scheme for a mathematical problem, not as a black-box trading signal. The problem itself was motivated by
-        discussions with Statkraft's intraday trading desks.
+        reach of classical solvers, so we built a deep learning method for it, with neural networks as the numerical
+        scheme. The thesis was completed during my internship on Statkraft's UK intraday power trading desk.
       </p>
 
       <h3>Why the standard tools break</h3>
@@ -46,13 +45,13 @@
         $$ \partial_t V + \sup_{u}\,\Big\{ \mathcal{L}^{u} V + f(x, u) \Big\} = 0, \qquad V(T,\cdot) = g, $$
       </p>
       <p>
-        which we recast as a forward–backward SDE in the deep BSDE tradition of Han, Jentzen and E, and approximate
+        which we recast as a forward–backward SDE following the deep BSDE method of Han, Jentzen and E, and approximate
         with neural networks trained on simulated paths of the market state.
       </p>
 
       <h3>Architecture and loss design</h3>
       <p>
-        The solver's accuracy lives or dies on two design choices:
+        The main design choices:
       </p>
       <ul>
         <li><strong>Network architecture.</strong> The value process is a hybrid <strong>NAIS-Net–LSTM</strong>: a

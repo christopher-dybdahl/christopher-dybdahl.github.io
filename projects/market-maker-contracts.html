@@ -31,10 +31,9 @@
         Following Baldacci, Manziuk, Mastrolia and Rosenbaum (2019), this is a <strong>principal–agent problem</strong>:
         the exchange posts an incentive contract over the market maker's executed volumes, and the market maker
         responds with optimal bid and ask quotes in the lit book and the dark pool while managing inventory risk.
-        Neither of the two nested value functions has a usable closed form, so we solved the whole problem with
-        neural networks. Methodologically this is the same programme as my NTNU thesis: deep learning as the
-        numerical method for high-dimensional Hamilton–Jacobi–Bellman equations that classical solvers cannot
-        handle well.
+        Neither of the two nested value functions has a usable closed form, so we solved the whole problem
+        end-to-end with neural networks: deep learning as the numerical method for Hamilton–Jacobi–Bellman
+        equations that classical solvers handle poorly.
       </p>
 
       <h3>Two coupled learning problems</h3>
@@ -45,7 +44,7 @@
         <li><strong>The agent's best response, learned without labels.</strong> A network \(L(z, q)\) takes the
           incentive \(z\) and inventory \(q\) and outputs the four quotes (bid and ask, lit and dark). It is trained
           by maximising the continuous-time Hamiltonian directly through the computational graph: the economic
-          objective itself is the training signal, so no solved examples are ever needed.</li>
+          objective itself is the training signal, so no solved examples are needed.</li>
         <li><strong>The principal's HJB, solved as supervised learning.</strong> Backward induction turns the
           exchange's PDE into a sequence of regression problems, one per time step, with an
           <strong>actor–critic</strong> split: the critic approximates the exchange's value function and the actor
@@ -61,8 +60,7 @@
         solved backwards from the terminal date one time step at a time, each step a supervised learning problem.
         The repository implements two solver regimes: a sequential backward sweep, which is more accurate per time
         step, and a parallel Jacobi-style update over all time steps at once, which trades some accuracy for much
-        cheaper iterations. Choosing between them is a standard compute-versus-accuracy decision rather than a
-        modelling one.
+        cheaper iterations.
       </p>
 
       <h3>Results</h3>
@@ -76,8 +74,8 @@
       </ul>
 
       <figure>
-        <img src="../assets/img/market_maker.jpg" alt="Optimal quoted volumes by inventory for lit and dark pool quotes" loading="lazy" />
-        <figcaption>Optimal quoted volumes for bid and ask quotes in the lit book and the dark pool, as a function of market-maker inventory, under the learned incentive contract.</figcaption>
+        <img src="../assets/img/market_maker.jpg" alt="Optimal quoted volumes against the lit-book incentive for lit and dark pool quotes" loading="lazy" />
+        <figcaption>Optimal quoted volumes for bid and ask quotes in the lit book and the dark pool, as a function of the lit-book incentive, at a fixed inventory level.</figcaption>
       </figure>
 
       <p class="muted" style="font-size: 13.5px;">
